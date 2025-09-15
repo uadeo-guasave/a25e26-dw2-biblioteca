@@ -9,3 +9,6 @@ Database First (cuando la base de datos ya existe)
 Libros, Autores, Usuarios, Prestamos, Editoriales, Categorias, Ejemplares
 */
 using PrestamoDeLibros;
+
+var db = new SqliteDbContext();
+db.Database.EnsureCreated();
