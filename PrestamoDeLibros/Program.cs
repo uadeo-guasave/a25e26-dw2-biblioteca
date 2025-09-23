@@ -8,7 +8,38 @@ Database First (cuando la base de datos ya existe)
 
 Libros, Autores, Usuarios, Prestamos, Editoriales, Categorias, Ejemplares
 */
+using System.Collections.Generic;
 using PrestamoDeLibros;
 
 var db = new SqliteDbContext();
+// db.Database.EnsureDeleted();
 db.Database.EnsureCreated();
+
+// CrearEditoriales(db);
+// CrearAutores(db);
+
+static void CrearEditoriales(SqliteDbContext db)
+{
+    // Editoriales
+    var editorial1 = new Editorial();
+    editorial1.Nombre = "Trillas";
+    var editorial2 = new Editorial { Nombre = "Planeta" };
+
+    // operaciones con la base de datos
+    // guardar las editoriales INSERT INTO ... values (val1, val2...);
+    db.Editoriales.Add(editorial1);
+    db.Editoriales.Add(editorial2);
+    db.SaveChanges();
+}
+
+static void CrearAutores(SqliteDbContext db)
+{
+    // Autores
+    var autor1 = new Autor { Nombres = "Marcella", Apellidos = "Jones" };
+    var autor2 = new Autor { Nombres = "José Luis", Apellidos = "Kingpin" };
+    var autor3 = new Autor { Nombres = "Alfred", Apellidos = "Wayne" };
+
+    // guardar los autores INSERT INTO ... values (val1,val2...),(val3,val4...)...
+    db.Autores.AddRange(new List<Autor> { autor1, autor2, autor3 });
+    db.SaveChanges();
+}

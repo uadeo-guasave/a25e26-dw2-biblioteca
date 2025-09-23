@@ -30,11 +30,27 @@ public class SqliteDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // TODO: describir indices, relaciones, etc.
         // FLUENT API
         modelBuilder.Entity<Editorial>().HasIndex(e => e.Nombre).IsUnique();
-
         modelBuilder.Entity<LibroAutor>().HasKey(la => new { la.LibroId, la.AutorId });
+
+        // Libros -> Editoriales N:1
+        modelBuilder.Entity<Libro>()
+            .HasOne(l => l.Editorial)
+            .WithMany(e => e.Libros)
+            .HasForeignKey(l => l.EditorialId);
+
+        // LibrosAutores -> Libros N:1
+        modelBuilder.Entity<LibroAutor>()
+            .HasOne(la => la.Libro)
+            .WithMany(l => l.LibrosAutores)
+            .HasForeignKey(la => la.LibroId);
+
+        // LibrosAutores -> Autores N:1
+        modelBuilder.Entity<LibroAutor>()
+            .HasOne(la => la.Autor)
+            .WithMany(a => a.LibrosAutores)
+            .HasForeignKey(la => la.AutorId);
 
         base.OnModelCreating(modelBuilder);
     }
