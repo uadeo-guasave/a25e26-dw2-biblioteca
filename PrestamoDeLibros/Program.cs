@@ -9,6 +9,7 @@ Database First (cuando la base de datos ya existe)
 Libros, Autores, Usuarios, Prestamos, Editoriales, Categorias, Ejemplares
 */
 using System.Collections.Generic;
+using Microsoft.VisualBasic;
 using PrestamoDeLibros;
 
 var db = new SqliteDbContext();
@@ -17,6 +18,40 @@ db.Database.EnsureCreated();
 
 // CrearEditoriales(db);
 // CrearAutores(db);
+// DDL: Data Definition Language (CREATE, ALTER, DROP)
+// DML: Data Manipulation Language (SELECT, INSERT, DELETE, UPDATE)
+
+// var editorial = BuscarEditorialPorNombre("Planeta", db);
+// if (editorial is not null)
+//     System.Console.WriteLine(editorial.Nombre);
+
+GuardarLibroDeAlfredoWayne(db);
+
+static void GuardarLibroDeAlfredoWayne(SqliteDbContext db)
+{
+    var libroDeAlfredo = new Libro
+    {
+        Título = "Como atrapar al guasón",
+        Edición = 1975,
+        Sinópsis = "oh pues deja que funcione esto, ya casi es hora"
+    };
+    var editorial = BuscarEditorialPorNombre("Planeta", db);
+    if (editorial is not null)
+    {
+        libroDeAlfredo.EditorialId = editorial.Id;
+        db.Libros.Add(libroDeAlfredo);
+        db.SaveChanges();
+    }
+    else
+    {
+        System.Console.WriteLine("No se encuentra la editorial");
+    }
+}
+
+static Editorial? BuscarEditorialPorNombre(string nombre, SqliteDbContext db)
+{
+    return db.Editoriales.Where(e => e.Nombre == nombre).FirstOrDefault();
+}
 
 static void CrearEditoriales(SqliteDbContext db)
 {
