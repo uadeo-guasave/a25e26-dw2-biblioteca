@@ -25,7 +25,41 @@ db.Database.EnsureCreated();
 // if (editorial is not null)
 //     System.Console.WriteLine(editorial.Nombre);
 
-GuardarLibroDeAlfredoWayne(db);
+// GuardarLibroDeAlfredoWayne(db);
+// ActualizarLaSinópsisDeUnLibro(db, titulo: "kjhdfkjahfdkjass", sinopsis: "Preguntale a Batman");
+// CrearTresLibrosMas(db);
+
+void CrearTresLibrosMas(SqliteDbContext db)
+{
+    var libros = new List<Libro>
+    {
+        new Libro { Título = "Uno", EditorialId = 1, Edición = 2000, Sinópsis = "..." },
+        new Libro {Título="Dos",EditorialId=1,Edición=2001,Sinópsis="..."},
+        new Libro {Título="Tres",EditorialId=1,Edición=2002,Sinópsis="..."}
+    };
+    db.Libros.AddRange(libros);
+    db.SaveChanges();
+}
+
+void ActualizarLaSinópsisDeUnLibro(SqliteDbContext db, string titulo, string sinopsis)
+{
+    var libro = BuscarLibroPorTítulo(db, titulo: titulo);
+    if (libro is not null)
+    {
+        libro.Sinópsis = sinopsis;
+        db.SaveChanges();
+        System.Console.WriteLine("Registro actualizado.");
+    }
+    else
+        System.Console.WriteLine($"El libro con el título {titulo} no se encuentra");
+}
+
+static Libro? BuscarLibroPorTítulo(SqliteDbContext db, string titulo)
+{
+    return db.Libros
+                .Where(l => l.Título.Contains(titulo))
+                .FirstOrDefault();
+}
 
 static void GuardarLibroDeAlfredoWayne(SqliteDbContext db)
 {

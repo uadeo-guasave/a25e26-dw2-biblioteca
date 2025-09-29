@@ -13,3 +13,6 @@ values ('Como atrapar al guasón',1975,2);
 
 select * from libros;
 
+UPDATE Libros SET
+Sinópsis = 'Pregúntale a Batman'
+WHERE Id = 1;
