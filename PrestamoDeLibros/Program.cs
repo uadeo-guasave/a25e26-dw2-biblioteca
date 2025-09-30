@@ -9,6 +9,7 @@ Database First (cuando la base de datos ya existe)
 Libros, Autores, Usuarios, Prestamos, Editoriales, Categorias, Ejemplares
 */
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using PrestamoDeLibros;
 
@@ -28,6 +29,37 @@ db.Database.EnsureCreated();
 // GuardarLibroDeAlfredoWayne(db);
 // ActualizarLaSinópsisDeUnLibro(db, titulo: "kjhdfkjahfdkjass", sinopsis: "Preguntale a Batman");
 // CrearTresLibrosMas(db);
+// EliminarLibroPorId(db, libroId: 4);
+MostrarTodosLosLibrosConNombreDeEditorial(db);
+
+void MostrarTodosLosLibrosConNombreDeEditorial(SqliteDbContext db)
+{
+    var libros = db.Libros
+                    .Include(l => l.Editorial)
+                    .ToList();
+    foreach (var libro in libros)
+    {
+        System.Console.WriteLine($"Libro: {libro.Título}, Editorial: {libro.Editorial!.Nombre}");
+    }
+}
+
+void EliminarLibroPorId(SqliteDbContext db, int libroId)
+{
+    var libro = BuscarLibroPorId(db, libroId);
+    if (libro is not null)
+    {
+        db.Libros.Remove(libro);
+        db.SaveChanges();
+        System.Console.WriteLine("Registro eliminado");
+    }
+    else
+        System.Console.WriteLine("El libro que intentas borrar no existe");
+}
+
+Libro? BuscarLibroPorId(SqliteDbContext db, int libroId)
+{
+    return db.Libros.Find(libroId);
+}
 
 void CrearTresLibrosMas(SqliteDbContext db)
 {
